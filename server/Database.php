@@ -39,9 +39,9 @@ class Database implements Queries {
     {
         $this->loadEnv();
         $this->DBServer = getenv('DB_SERVER');
-        $this->DBUser = "root";
-        $this->DBPass = "arktechdb";
-        $this->DBName = "arktechdatabase";
+        $this->DBUser = getenv('DB_USER');
+        $this->DBPass = getenv('DB_PASS');
+        $this->DBName = getenv('DB_NAME');
         $this->getConnection();
 
         $this->db->set_charset("utf8mb4");
