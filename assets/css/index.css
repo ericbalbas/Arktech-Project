@@ -1,0 +1,219 @@
+/* all  */
+html,
+body,
+* {
+    font-size: initial !important;
+    font-family: 'Roboto', sans-serif; /* Use single quotes for the font name */
+    /* Initial setup */
+}
+
+.form-groupss {
+    position: relative;
+}
+
+.floating-labelss {
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    font-size: 14px;
+    transition: 0.2s ease all;
+    color: #999;
+}
+
+.form-controls:focus+.floating-labelss,
+.form-controlss:not(:placeholder-shown)+.floating-label {
+    top: -10px;
+    font-size: 12px;
+    color: #007bff;
+    background-color: #ffff;
+    padding: 4px;
+
+    /* Bootstrap primary color */
+}
+
+.form-controlss:focus {
+    border-color: #007bff;
+    padding-top: 10px;
+
+    /* Change border color on focus */
+}
+
+input[type="text"] {
+    height: 40px !important;
+    width: 100% !important;
+    /* Enforce the height */
+}
+
+/* office_selection css */
+.card {
+    /* padding; */
+    border: none;
+    /* Remove border */
+    border-radius: 5px;
+    /* Rounded corners */
+    height: 250px;
+    /* Set height for the cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    /* Space between cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Add shadow effect */
+    transition: transform 0.2s;
+    /* Transition for hover effect */
+    background-color: #f9f9f9;
+    /* Light background color */
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    /* Slightly lift the card on hover */
+}
+
+.card-title {
+    font-size: 2.3rem !important;
+    font-weight:bolder;
+    /* Increase title size */
+    margin-bottom: 15px;
+    /* Space below title */
+}
+
+.card-text {
+    flex-grow: 1;
+    /* Allow text to grow and fill space */
+    margin-bottom: 15px;
+    /* Space below text */
+    font-size: 1.5em;
+    /* Increase font size */
+    color: #555;
+    /* Subtle text color */
+}
+
+.btns {
+    margin-top: 10px;
+    height: 30px !important;
+    font-size: .9rem !important;
+    /* Push button to the bottom */
+}
+
+.label.badge-pill {
+    border-radius: .2rem;
+    font-size: .8rem !important;
+    margin: 0 0.25em;
+}
+
+.employeeImgs {
+    display: flex;
+    justify-content: flex-end;
+    /* Align items to the start */
+    position: relative;
+    /* For overlapping effect */
+    width: auto;
+    /* Allow the width to adjust based on content */
+    margin-bottom: 10px;
+    /* Add some space below the images */
+}
+
+.img-container {
+    position: relative;
+    /* Position for overlap */
+    width: 30px;
+    /* Adjust width for the circular image */
+    height: 30px;
+    /* Adjust height for the circular image */
+    border: 1px solid cadetblue;
+    /* Circular border color */
+    border-radius: 50%;
+    /* Circular shape */
+    overflow: hidden;
+    /* Hide overflow */
+    margin-left: -10px;
+    /* Control overlap */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    /* Add shadow */
+}
+
+
+
+.img-container img {
+    width: 100%;
+    /* Ensure image fills the container */
+    height: 100%;
+    /* Ensure height fills container */
+    object-fit: cover;
+    /* Maintain aspect ratio */
+    position: absolute;
+    /* Position to control overflow */
+    top: 50%;
+    /* Center the image */
+    left: 50%;
+    /* Center the image */
+    transform: translate(-50%, -50%);
+    /* Adjust position */
+}
+
+
+/* table css  */
+table.dataTable,
+table.dataTable th,
+table.dataTable td {
+    box-sizing: content-box;
+    font-size: .8rem !important;
+}
+
+table.dataTable th {
+    padding: 2px !important;
+}
+
+table.dataTable tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+
+/* Center text */
+.text-center {
+    text-align: center;
+}
+
+table.dataTable td:nth-child(3) {
+    max-width: 200px;
+}
+
+table.dataTable td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+table.dataTable {
+    width: 100%;
+    margin: 0 auto;
+    clear: both;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table,
+th,
+td {
+    border: 1px solid #ddd !important;
+}
+
+.dtfc-fixed-left{
+    position: static;
+}
+
+.custom-flex {
+    display: flex;
+    justify-content: space-between;
+}
