@@ -292,9 +292,6 @@ class AutomationRepository
             $suffix = $type ? "-1" : "";
             $destination = $destination . DIRECTORY_SEPARATOR . $bookingId."$suffix.$extension";
             echo copy($path, $destination) ? "nicee path has been move to". $destination."<br>" : "oh no error in path".$path." <br> ";
-
-
-        
         }
     }
 
