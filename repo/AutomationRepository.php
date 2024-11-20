@@ -152,13 +152,18 @@ class AutomationRepository
         //get details; 
         $details = $this->automationDetails($lotNumber);
         $isExisted = $this->hasExistingFile($details->partNumber);
-        echo "<pre>" . print_r($details, true) . "</pre>";
+        echo "<pre>{$lotNumber}" . print_r($details, true) . "</pre>";
+
+        $nestingProcesses = [
+            1 => 430,
+            2 => 312
+        ];
 
         if($isExisted AND $details)
         {
             $automation = new Automation();
             $automation->setLotNumber($details->lotNumber)
-                    ->setLaserNestingProcess(430) // PH laser nesting;
+                    ->setLaserNestingProcess($nestingProcesses[$details->nestingType]) // PH laser nesting;
                     ->setBookingId($details->bookingId)
                     ->setPartNumber($details->partNumber)
                     ->setsheetQuantity($details->sheetQuantity)
@@ -187,6 +192,9 @@ class AutomationRepository
             $this->autoFinishBooking($automation);
             
         }
+
+        // Create Notificiation here
+        
     }
 
     private function automationDetails($lotNumber)
@@ -201,6 +209,7 @@ class AutomationRepository
             'width' => '1000.000',
             'height' => '1160.000',
             'quantityPerSheet' => '15',
+            'nestingType' => 1,
             'sheetQuantity' => '16',
             'materialRequirement' => '17',
             'workingQuantity' => '380', 
@@ -216,6 +225,7 @@ class AutomationRepository
                     sheetQuantity, 
                     book.bookingId,
                     book.bookingStatus,
+                    book.nestingType,
                     materialRequirement,
                     autoId,
                     dataOne as materialName,
@@ -297,8 +307,10 @@ class AutomationRepository
 
     private function finishCurrentAutomation($id, $lotNumber) 
     {
-        finishProcessTest($lotNumber, $id, 0, '', 'Automation Nesting done by PMS');
+        finishProcessTest($lotNumber, $id, 0, '', 'Automations Nesting done by PMS');
     }
+
+
 
     
 
