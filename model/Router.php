@@ -26,6 +26,7 @@ class Router
 
         // Get the action (the callable function or method)
         $action = $this->routes[$method][$route];
+        
 
         // Check if the action is callable
         if (!is_callable($action)) {
@@ -34,26 +35,12 @@ class Router
         // print_r($_FILES);
         // Get the parameters based on the request method
         $params = ($method === 'POST') ? array_merge($_POST, $_FILES) : $_GET;
-
-        print_r($params);
-     
         unset($params['route']); // Remove 'route' param from the array
-
-        $automation = new Automation();
-
-        foreach ($params as $key => $value) {
-            // Construct the setter method name based on the property name
-            $setterMethod = 'set' . ucfirst($key);
-            echo $setterMethod;
-            if (method_exists($automation, $setterMethod)) {
-                $automation->$setterMethod($value);
-            }
-        }
 
         // Display the automation object for debugging   
         // echo "<pre>" . print_r($automation, true) . "</pre>";
 
-        call_user_func($action, $automation);
+        call_user_func($action, $params);
     }
 
     public function getRoutes()

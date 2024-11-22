@@ -10,14 +10,32 @@ class Observer
         $this->observerId = $id;
     }
 
-    private function pushNotificationDetails(array $message)
+    private function postNotification(array $message)
     {   
+        // insert data to notificationdetails
+        $insert = new Database;
+
+        $insert->table('system_notificationdetails')
+            ->setValues($message)
+            ->execute("insert");
+
+        $_lastId = $insert->lastInsertId();
+
+        $notifData = [
+            'notificationId' => $_lastId,
+            'notificationTarget' => $this->observerId,
+            'targetType' => 2,
+        ];
+
+        $insert->table('system_notification')
+            ->setValues($notifData)
+            ->execute("insert");
         
     }
 
-    public function pushNotification(array $message)
+    public function notify(array $message)
     {
-
+       $this->postNotification($message);
     }
 }
 

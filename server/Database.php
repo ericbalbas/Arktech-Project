@@ -2,18 +2,63 @@
 
 namespace server;
 
-interface Queries{
+interface Queries
+{
+    /**
+     * Establish the database connection.
+     */
     public function getConnection();
+
+    /**
+     * Set the table to operate on.
+     */
     public function table($table);
+
+    /**
+     * Set the data/values for an insert or update query.
+     */
     public function setValues(array $data);
+
+    /**
+     * Execute the query based on the type (select, insert, update, delete).
+     */
     public function execute($type);
+
+    /**
+     * Add where conditions for the query.
+     */
     public function where($field, $value = null);
+
+    /**
+     * Set the columns to select or fetch.
+     */
     public function setColumn($columns);
+
+    /**
+     * Add an ORDER BY clause to the query.
+     */
     public function orderBy($columns, $sort = 'ASC');
+
+    /**
+     * Add a GROUP BY clause to the query.
+     */
     public function groupBy($columns);
+
+    /**
+     * Add a LIMIT clause to the query.
+     */
     public function limit($count, $offset = null);
+
+    /**
+     * Display an array in a readable format.
+     */
     public static function display($array);
+
+    /**
+     * Execute a raw SQL query and fetch results.
+     */
     public static function fetchSql($sql, int $type);
+
 }
 
 class Database implements Queries {
@@ -34,6 +79,7 @@ class Database implements Queries {
     private $orderBy = '';
     private $groupBy = '';
     private $limit = '';
+    private $strict = false;
 
     public function __construct()
     {
@@ -46,7 +92,10 @@ class Database implements Queries {
 
         $this->db->set_charset("utf8mb4");
     }
-
+    
+    /**
+     * Load environment variables from a .env file.
+     */
     private function loadEnv()
     {
         $envFile ='.env';
@@ -75,7 +124,10 @@ class Database implements Queries {
         }
     }
 
-    
+
+    /**
+     * Establish the database connection.
+     */
     public function getConnection()
     {
         $this->db = new \mysqli($this->DBServer, $this->DBUser, $this->DBPass, $this->DBName);
@@ -121,6 +173,33 @@ class Database implements Queries {
         return $data;
     }
 
+    /**
+     * Set the table to operate on for the query.
+     *
+     * This method initializes the table name and resets any previously set fields, data, 
+     * or where clauses. It allows chaining with other methods to construct queries.
+     *
+     * Example Usage:
+     * ```php
+     * $db->table('users')->setColumn('name, email')->execute('select');
+     * // Generates: SELECT name, email FROM users
+     *
+     * $db->table('products')->where('price', 100)->execute('select');
+     * // Generates: SELECT * FROM products WHERE price = 100
+     *
+     * $db->table('orders')->where('status', 'completed')->orderBy('created_at', 'DESC')->limit(10)->execute('select');
+     * // Generates: SELECT * FROM orders WHERE status = 'completed' ORDER BY created_at DESC LIMIT 10
+     *
+     * $db->table('users')->setValues(['name' => 'John Doe', 'email' => 'john@example.com'])->execute('insert');
+     * // Generates: INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com')
+     *
+     * $db->table('users')->setValues(['email' => 'new_email@example.com'])->where('id', 1)->execute('update');
+     * // Generates: UPDATE users SET email = 'new_email@example.com' WHERE id = 1
+     * ```
+     *
+     * @param string $table The name of the table to operate on.
+     * @return self Returns the instance for method chaining.
+     */
     public function table($table)
     {
         $this->fields = $this->data = $this->whereClauses = [];
@@ -162,7 +241,8 @@ class Database implements Queries {
             } elseif (is_numeric($value)) {
                 $this->whereClauses[] = "$field = $value";
             } else {
-                $this->whereClauses[] = "$field LIKE '%" . $this->db->real_escape_string($value) . "%'";
+                $whereValue = $this->strict ? "{$this->db->real_escape_string($value)}" : "%{$this->db->real_escape_string($value)}%" ;
+                $this->whereClauses[] = "$field LIKE '$whereValue'";
             }
         }
 
@@ -197,6 +277,16 @@ class Database implements Queries {
 
         // $this->generatedQuery = $query;
         return $query;
+    }
+
+    /**
+     * Get the last inserted ID.
+     *
+     * @return int|string|null The last inserted ID or null if no insert operation was performed.
+     */
+    public function lastInsertId()
+    {
+        return $this->db->insert_id; // Returns the last auto-increment ID
     }
 
     private function update()
@@ -304,7 +394,17 @@ class Database implements Queries {
         echo $this->generatedQuery;
     }
 
+    /**
+     * Set the value of strict
+     *
+     * @return  self
+     */ 
+    public function setStrict($strict)
+    {
+        $this->strict = $strict;
 
+        return $this;
+    }
 }
 
 ?>

@@ -16,7 +16,7 @@ class Subject {
     {
         // $this->notificationLog[] = $message;
         foreach ($this->observers as $observer) {
-            $observer->pushNotification($message);
+            $observer->notify($message);
         }
     }
 }

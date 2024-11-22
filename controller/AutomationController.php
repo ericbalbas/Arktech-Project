@@ -24,6 +24,7 @@ class AutomationController
     public function requestHandler()
     {
         $this->router->add('create/automations', [$this->repository, 'create'], 'POST');
+        $this->router->add('fetch/notif', [$this->repository, 'notificationUpdate'], 'GET');
         $this->router->HttpHandlerRequest();
     }
 

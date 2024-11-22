@@ -47,13 +47,13 @@ include('PHP Modules/arjel_tablefunctions.php');
 
 //         echo $sql = "<br>insert into ppic_lotlist (lotNumber, poId , partId, parentLot, partLevel, workingQuantity, identifier, dateGenerated, status, bookingStatus, poContentId, partialBatchId) values ('" . $newLotNumber . "', " . $lotQueryResult['poId'] . ", " . $lotQueryResult['partId'] . ", '" . $lotQueryResult['parentLot'] . "', " . $lotQueryResult['partLevel'] . ", " . $quantity . ", " . $lotQueryResult['identifier'] . ", now(), " . $lotQueryResult['status'] . ", 1, '" . $lotQueryResult['poContentId'] . "', '" . $lotQueryResult['partialBatchId'] . "')";
 //         echo "]<hr> UPDATE LOT QUANTITY *****[";
-//         // $query = $db->query($sql);
+//         $query = $db->query($sql);
 //         // ---------------------------------------------------------------------------------------------------------------------------------
 
 //         // --------------------------------------- Update Working Quantity of Source Lot ---------------------------------------------------
 //         echo $sql = "<br>UPDATE ppic_lotlist SET workingQuantity = " . $newQuantity . " WHERE lotNumber like '" . $lot . "'";
 //         echo "]<hr>";
-//         // $query = $db->query($sql);
+//         $query = $db->query($sql);
 //         // ------------------------------------------------------------------------------------------------------ --------------------------
 
 //         // -------------------------------------------- Retrieve Work Schedule Data --------------------------------------------------------
@@ -90,7 +90,7 @@ include('PHP Modules/arjel_tablefunctions.php');
 // 						WHERE	id = " . $id . " LIMIT 1 
 // 					";
 //                 echo "<hr>";
-//                 // $queryInsert = $db->query($sql);
+//                 $queryInsert = $db->query($sql);
 //             }
 //         }
 //         echo "<hr>";
@@ -98,14 +98,14 @@ include('PHP Modules/arjel_tablefunctions.php');
 //         $workScheduleQuery = $db->query($sql);
 //         while ($workScheduleQueryResult = $workScheduleQuery->fetch_assoc()) {
 //           echo  $sql = "<br> insert into ppic_workschedule (poId, customerId, poNumber, lotNumber, partNumber, revisionId, processCode , processOrder, processSection, processRemarks, targetFinish, receiveDate, deliveryDate, recoveryDate, urgentFlag, subconFlag, partLevelFlag) values (" . $workScheduleDetailQueryResult['poId'] . " ," . $workScheduleDetailQueryResult['customerId'] . ", '" . $workScheduleDetailQueryResult['poNumber'] . "' , '" . $newLotNumber . "', '" . $workScheduleDetailQueryResult['partNumber'] . "' , '" . $workScheduleDetailQueryResult['revisionId'] . "', '" . $workScheduleQueryResult['processCode'] . "' , " . ($processOrder++) . ", " . $workScheduleQueryResult['processSection'] . ", '" . $workScheduleQueryResult['processRemarks'] . "', '" . $workScheduleQueryResult['targetFinish'] . "', '" . $workScheduleDetailQueryResult['receiveDate'] . "', '" . $workScheduleDetailQueryResult['deliveryDate'] . "', '" . $workScheduleDetailQueryResult['recoveryDate'] . "', " . $workScheduleDetailQueryResult['urgentFlag'] . ", " . $workScheduleDetailQueryResult['subconFlag'] . ", " . $workScheduleDetailQueryResult['partLevelFlag'] . ")";
-//             // $query = $db->query($sql);
+//             $query = $db->query($sql);
 //             echo "<hr>";
 //         }
 //         // --------------------------------------------------------------------------------------------------------------------------------
 //         // ------------------------------------------------ Insert Into PRS Log --------------------------------------------------------------------
 //         echo $sql = "<br>INSERT INTO ppic_prslog (lotNumber,employeeId,date,remarks,type,sourceLotNumber,partialQuantity) values ('" . $newLotNumber . "', '" . $employeeId . "', now(), 'Automated Partial', 3,'" . $lot . "', '" . $newQuantity . "')";
 //         echo "<hr>";
-//         // $query = $db->query($sql);
+//         $query = $db->query($sql);
 //         // -----------------------------------------------------------------------------------------------------------------------------------------
 
 //         $sql = "SELECT id, processSection FROM `ppic_workschedule` WHERE lotNumber LIKE '" . $newLotNumber . "' AND processCode IN(312,430,431,432) ORDER BY processOrder LIMIT 1";
@@ -169,9 +169,13 @@ function partialLotNumberTest($lot, $quantity, $startFromProcessOrder, $employee
                 (lotNumber, poId , partId, parentLot, partLevel, workingQuantity, identifier, dateGenerated, status, bookingStatus, poContentId, partialBatchId) 
                 VALUES 
                 ('" . $newLotNumber . "', " . $lotQueryResult['poId'] . ", " . $lotQueryResult['partId'] . ", '" . $lotQueryResult['parentLot'] . "', " . $lotQueryResult['partLevel'] . ", " . $quantity . ", " . $lotQueryResult['identifier'] . ", now(), " . $lotQueryResult['status'] . ", 1, '" . $lotQueryResult['poContentId'] . "', '" . $lotQueryResult['partialBatchId'] . "')";
-        echo "<tr><td>3</td><td>Insert New Lot</td><td>{$sql}</td></tr>";
+        $db->query($sql);
+       echo "<tr><td>3</td><td>Insert New Lot</td><td>{$sql}</td></tr>";
 
+       
         $sql = "UPDATE ppic_lotlist SET workingQuantity = " . $newQuantity . " WHERE lotNumber like '" . $lot . "'";
+        $db->query($sql);
+
         echo "<tr><td>4</td><td>Update Lot Quantity</td><td>{$sql}</td></tr>";
 
         if ($_GET['country'] == 1) {
@@ -211,6 +215,8 @@ function partialLotNumberTest($lot, $quantity, $startFromProcessOrder, $employee
                         SELECT poId, customerId, poNumber, partNumber, revisionId, processCode , processSection, processRemarks, targetFinish, receiveDate, deliveryDate, recoveryDate, urgentFlag, subconFlag, partLevelFlag, '" . $newLotNumber . "', " . ($processOrder++) . " 
                         FROM ppic_workschedule
                         WHERE id = " . $id . " LIMIT 1";
+                 $db->query($sql);
+                
                 echo "<tr><td>7</td><td>Insert Work Schedule for Process Code</td><td>{$sql}</td></tr>";
             }
         }
@@ -230,13 +236,17 @@ function partialLotNumberTest($lot, $quantity, $startFromProcessOrder, $employee
                     (poId, customerId, poNumber, lotNumber, partNumber, revisionId, processCode , processOrder, processSection, processRemarks, targetFinish, receiveDate, deliveryDate, recoveryDate, urgentFlag, subconFlag, partLevelFlag) 
                     VALUES 
                     (" . $workScheduleDetailQueryResult['poId'] . ", " . $workScheduleDetailQueryResult['customerId'] . ", '" . $workScheduleDetailQueryResult['poNumber'] . "', '" . $newLotNumber . "', '" . $workScheduleDetailQueryResult['partNumber'] . "', '" . $workScheduleDetailQueryResult['revisionId'] . "', '" . $workScheduleQueryResult['processCode'] . "', " . ($processOrder++) . ", " . $workScheduleQueryResult['processSection'] . ", '" . $workScheduleQueryResult['processRemarks'] . "', '" . $workScheduleQueryResult['targetFinish'] . "', '" . $workScheduleDetailQueryResult['receiveDate'] . "', '" . $workScheduleDetailQueryResult['deliveryDate'] . "', '" . $workScheduleDetailQueryResult['recoveryDate'] . "', " . $workScheduleDetailQueryResult['urgentFlag'] . ", " . $workScheduleDetailQueryResult['subconFlag'] . ", " . $workScheduleDetailQueryResult['partLevelFlag'] . ")";
+            $db->query($sql);
+
             echo "<tr><td>9</td><td>Insert into Work Schedule</td><td>{$sql}</td></tr>";
         }
 
         $sql = "INSERT INTO ppic_prslog 
                 (lotNumber, employeeId, date, remarks, type, sourceLotNumber, partialQuantity) 
                 VALUES 
-                ('" . $newLotNumber . "', '" . $employeeId . "', now(), 'Automated Partial', 3, '" . $lot . "', '" . $newQuantity . "')";
+                ('" . $newLotNumber . "', 'SYSTEM', now(), 'Automated Partial', 3, '" . $lot . "', '" . $newQuantity . "')";
+            $db->query($sql);
+
         echo "<tr><td>10</td><td>Insert into PRS Log</td><td>{$sql}</td></tr>";
 
         $sql = "SELECT id, processSection 
@@ -542,25 +552,25 @@ function finishProcessTest($lotNumber = "",  $currentWorkScheduleId, $workingQua
 
             if (in_array($processCode, array(437, 438, 461, 137, 138, 229, 597, 598, 599, 600, 601, 602, 603))) {
                 echo   $sql = "UPDATE ppic_workschedule SET " . $actualStartParameter . " actualEnd='" . $dateTimeNow . "', actualFinish=now(), quantity=" . $workingQuantity . ", employeeId='" . $employeeId . "', status=1 WHERE id = " . $currentWorkScheduleId;
-                // $result = $db->query($sql);
+                $result = $db->query($sql);
                 echo "<br>";
 
             } else {
                 // ------------------------------------------------------------------------------------------ Finish Process --------------------------------------------------------------------------------------
                 echo   $sql = "UPDATE ppic_workschedule SET " . $actualStartParameter . " actualEnd='" . $dateTimeNow . "', actualFinish=now(), quantity=" . $workingQuantity . ", employeeId='" . $employeeId . "', status=1, processRemarks = '" . mysqli_real_escape_string($db, $processRemarks) . "' WHERE id = " . $currentWorkScheduleId;
-                // $result = $db->query($sql);
+                $result = $db->query($sql);
                 echo "<br>";
 
             }
 
             // ----------------------------------------------------------------------------------------- Update Availability --------------------------------------------------------------------------------		
             if (!in_array($processCode, array(437, 438, 461, 597, 598, 599, 600, 601, 602, 603))) {
-                // updateAvailability($lotNumber);
+                updateAvailability($lotNumber);
             }
 
             // ---------------------------------------------------------------------------------------- Update system_machineworkschedule ---------------------------------------------------------
             echo $sql = "UPDATE system_machineWorkschedule SET status = 1 WHERE inputDate = '" . date("Y-m-d") . "' AND workscheduleId = " . $currentWorkScheduleId;
-            // $updateQuery = $db->query($sql);
+            $updateQuery = $db->query($sql);
             echo "<br>";
 
 
@@ -573,7 +583,7 @@ function finishProcessTest($lotNumber = "",  $currentWorkScheduleId, $workingQua
                 $inputDate = $resultCheckSched['inputDate'];
 
                 echo  $sql = "DELETE FROM system_machineWorkschedule WHERE inputDate = '" . $inputDate . "' AND workscheduleId = " . $currentWorkScheduleId;
-                // $deleteQuery = $db->query($sql);
+                $deleteQuery = $db->query($sql);
                 echo "<br>";
 
             }
@@ -591,7 +601,7 @@ function finishProcessTest($lotNumber = "",  $currentWorkScheduleId, $workingQua
             echo $sql = "UPDATE ppic_workschedule SET previousActualFinish=now() WHERE id = " . $nextWorkScheduleId;
             echo "<br>";
 
-            // $updateQuery = $db->query($sql);
+            $updateQuery = $db->query($sql);
 
             // --------------------------------------------- Remove Data In system_lotlist If Current Process Is Delivery Or Warehouse Storage ---------------------------------------------
             if ($processCode == 144 or  $processCode == 353) {
@@ -602,7 +612,7 @@ function finishProcessTest($lotNumber = "",  $currentWorkScheduleId, $workingQua
 
                 if ($processCode == 144) {
                     echo $sql = "UPDATE ppic_workschedule SET status = 1 WHERE lotNumber LIKE '" . $lotNumber . "' AND processCode = 496 AND status = 0";
-                    // $queryUpdate = $db->query($sql);
+                    $queryUpdate = $db->query($sql);
                     echo "<br>";
                     
                 }
@@ -612,7 +622,7 @@ function finishProcessTest($lotNumber = "",  $currentWorkScheduleId, $workingQua
             echo $sql = "DELETE FROM view_workschedule WHERE id = " . $currentWorkScheduleId;
             echo "<br>";
 
-            // $deleteQuery =   $db->query($sql);
+            $deleteQuery =   $db->query($sql);
 
             // updateSTAnalysis($currentWorkScheduleId);
 
@@ -632,7 +642,7 @@ function finishProcessTest($lotNumber = "",  $currentWorkScheduleId, $workingQua
                     $workIdDue = $resultCheckDueDate['id'];
 
                     echo $sql = "UPDATE ppic_workschedule SET actualStart = '" . $dateTimeNow . "', actualEnd='" . $dateTimeNow . "', actualFinish='" . $dateNow . "', quantity=" . ($workingQuantity) . ", employeeId='" . $employeeId . "', status = 1 WHERE id = " . $workIdDue . " AND status = 0 LIMIT 1";
-                    // $queryUpdate = $db->query($sql);
+                    $queryUpdate = $db->query($sql);
                     echo "<br>";
                 }
             }

@@ -3,6 +3,9 @@ namespace repo;
 
 use model\Automation;
 use server\Database;
+use server\Notification\Observer;
+use server\Notification\Subject;
+
 class AutomationRepository
 {
     protected $database;
@@ -58,8 +61,18 @@ class AutomationRepository
         ]);
     }
 
-    public function create(Automation $auto)
-    {
+    public function create($params){
+
+        $auto = new Automation();
+
+        foreach ($params as $key => $value) {
+            // Construct the setter method name based on the property name
+            $setterMethod = 'set' . ucfirst($key);
+            // echo $setterMethod;
+            if (method_exists($auto, $setterMethod)) {
+                $auto->$setterMethod($value);
+            }
+        }
         // Step 1: Gather data for insertion, excluding file upload fields
         $filterData = $this->filterDataForDatabase($auto);
 
@@ -163,7 +176,7 @@ class AutomationRepository
         {
             $automation = new Automation();
             $automation->setLotNumber($details->lotNumber)
-                    ->setLaserNestingProcess($nestingProcesses[$details->nestingType]) // PH laser nesting;
+                    ->setLaserNestingProcess($nestingProcesses[$details->nestingType])
                     ->setBookingId($details->bookingId)
                     ->setPartNumber($details->partNumber)
                     ->setsheetQuantity($details->sheetQuantity)
@@ -194,7 +207,21 @@ class AutomationRepository
         }
 
         // Create Notificiation here
-        
+        if (!$isExisted) 
+        {
+            $this->updateWorkingTable($lotNumber, 3); // 3 means no data, engineer must be notified and input data
+
+            $subject = new Subject();
+            $subject->attach(new Observer('1163'));
+            $subject->attach(new Observer('0939'));
+            $message = [
+                'notificationDetail' => "Attention : Please input automation details for {$lotNumber} to automate nesting",
+                'notificationKey'=> $lotNumber,
+                'notificationLink' => "/V4/Others/Ericj/Auto%20Finish%20Booking/index.php?route=fetch/notif&",
+                'notificationType' => 13 
+            ];
+            $subject->notify($message);
+        }
     }
 
     private function automationDetails($lotNumber)
@@ -202,7 +229,7 @@ class AutomationRepository
         $testModeData = (object)[
             'lotNumber' => '20-20-2000',
             'bookingId' => 231527, 
-            'autoId' => 68, 
+            'autoId' => 0, 
             'partNumber' => 'PV00977A M92',
             'materialName' => 'JFE-H400-ECOG',
             'thickNess' => '3.200',
@@ -260,11 +287,6 @@ class AutomationRepository
         // Use glob to find matching files
         $pdfFiles = glob(NESTING_PATH."/{$partNumber}_*.pdf");
         $zipFiles = glob(PROGRAM_PATH."/{$partNumber}_*.zip");
-
-        // Debug: Output the results of glob()
-        echo "<pre>PDF Files: " . print_r($pdfFiles, true) . "</pre>";
-        echo "<pre>ZIP Files: " . print_r($zipFiles, true) . "</pre>";
-
         // Check if any matching files were found in both directories
         return !empty($pdfFiles) && !empty($zipFiles);
     }
@@ -308,10 +330,24 @@ class AutomationRepository
     private function finishCurrentAutomation($id, $lotNumber) 
     {
         finishProcessTest($lotNumber, $id, 0, '', 'Automations Nesting done by PMS');
+        $this->updateWorkingTable($lotNumber, 1); // 1 meaning success
     }
 
+    private function updateWorkingTable(string $lotNumber, int $status)
+    {
+        $update = new Database;
+        $update->table('system_forautomate')
+            ->setStrict(true)
+            ->setValues(['status' => $status])
+            ->where('lotNumber', $lotNumber)
+            ->execute('update');
 
+        echo $update->getGeneratedQuery();
+    }
 
-    
-
+    public function notificationUpdate($param)
+    {   
+        extract($param);
+        if($notificationId) $this->database->table('system_notification')->setValues(['notificationStatus' => 1])->where('notificationId', $notificationId)->execute('update');
+    }
 }

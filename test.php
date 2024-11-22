@@ -9,13 +9,15 @@ $database = new Database;
 $repository = new AutomationRepository($database, true);
 
 # Fetch the available for automation
-$availablForAuto = $database::fetchSql("SELECT lotNumber FROM system_forautomate WHERE DATE(dateInput) = CURDATE() AND status = 0");
+$availablForAuto = $database::fetchSql("SELECT lotNumber FROM view_workschedule WHERE lotNumber IN (SELECT lotNumber FROM system_forautomate WHERE status NOT IN (1,2)) AND processCode IN (430,312) AND availability =1 ");
 foreach($availablForAuto as $auto)
 {
     //Check if it is really meant for automation 
     $repository->automateProcess($auto->lotNumber);
 }
 
+
+// print_r($availablForAuto);
 
 
 
