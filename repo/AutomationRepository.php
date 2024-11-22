@@ -342,7 +342,7 @@ class AutomationRepository
             ->where('lotNumber', $lotNumber)
             ->execute('update');
 
-        echo $update->getGeneratedQuery();
+        // echo $update->getGeneratedQuery();
     }
 
     public function notificationUpdate($param)
