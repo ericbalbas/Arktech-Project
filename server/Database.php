@@ -80,6 +80,7 @@ class Database implements Queries {
     private $groupBy = '';
     private $limit = '';
     private $strict = false;
+    private $test = false;
 
     public function __construct()
     {
@@ -241,7 +242,7 @@ class Database implements Queries {
             } elseif (is_numeric($value)) {
                 $this->whereClauses[] = "$field = $value";
             } else {
-                $whereValue = $this->strict ? "{$this->db->real_escape_string($value)}" : "%{$this->db->real_escape_string($value)}%" ;
+                $whereValue = $this->strict ? "{$this->db->real_escape_string($value)}" : "{$this->db->real_escape_string($value)}" ;
                 $this->whereClauses[] = "$field LIKE '$whereValue'";
             }
         }
@@ -298,7 +299,7 @@ class Database implements Queries {
         $setClause = str_replace("0 = '","",$this->buildSetClause());
         $whereClause = implode(" AND ", $this->whereClauses);
 
-        $query = "UPDATE {$this->tableName} SET $setClause WHERE $whereClause";
+        $query = "UPDATE {$this->tableName} SET $setClause WHERE $whereClause {$this->limit}";
 
         // $this->generatedQuery = $query;
         return $query;
@@ -311,7 +312,7 @@ class Database implements Queries {
         }
         $whereClause = implode(" AND ", $this->whereClauses);
 
-        $query = "DELETE FROM {$this->tableName} WHERE $whereClause";
+        $query = "DELETE FROM {$this->tableName} WHERE $whereClause {$this->limit}";
         return $query;
     }
 
@@ -402,6 +403,18 @@ class Database implements Queries {
     public function setStrict($strict)
     {
         $this->strict = $strict;
+
+        return $this;
+    }
+
+    /**
+     * Set the value of test
+     *
+     * @return  self
+     */ 
+    public function setTest($test)
+    {
+        $this->test = $test;
 
         return $this;
     }

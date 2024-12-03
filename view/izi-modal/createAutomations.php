@@ -9,7 +9,7 @@
             </div>
             <div class="col-md-6">
                 <label for="nestingProgramInput" class="form-label">Nesting Program (ZIP):</label>
-                <input type="file" name="nestingProgram" id="nestingProgramInput" accept=".zip" class="form-control shadow-sm">
+                <input type="file" name="nestingProgram" id="nestingProgramInput" accept=".001" class="form-control shadow-sm">
             </div>
         </div>
         <div class="row mb-2">

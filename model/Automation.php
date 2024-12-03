@@ -62,6 +62,12 @@ class Automation
 
     protected $laserNestingProcess;
 
+    protected $workingQuantity;
+
+    protected $filler;
+
+    protected $autoId;
+
     /**
      * Get the Purchase Order ID.
      *
@@ -415,6 +421,66 @@ class Automation
     public function setLaserNestingProcess($laserNestingProcess) : self
     {
         $this->laserNestingProcess = $laserNestingProcess;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of workingQuantity
+     */ 
+    public function getWorkingQuantity()
+    {
+        return $this->workingQuantity;
+    }
+
+    /**
+     * Set the value of workingQuantity
+     *
+     * @return  self
+     */ 
+    public function setWorkingQuantity($workingQuantity)
+    {
+        $this->workingQuantity = $workingQuantity;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of filler
+     */ 
+    public function getFiller()
+    {
+        return $this->filler;
+    }
+
+    /**
+     * Set the value of filler
+     *
+     * @return  self
+     */ 
+    public function setFiller($filler)
+    {
+        $this->filler = $filler;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of autoId
+     */ 
+    public function getAutoId()
+    {
+        return $this->autoId;
+    }
+
+    /**
+     * Set the value of autoId
+     *
+     * @return  self
+     */ 
+    public function setAutoId($autoId)
+    {
+        $this->autoId = $autoId;
 
         return $this;
     }

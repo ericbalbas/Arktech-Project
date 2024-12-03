@@ -169,12 +169,12 @@ function partialLotNumberTest($lot, $quantity, $startFromProcessOrder, $employee
                 (lotNumber, poId , partId, parentLot, partLevel, workingQuantity, identifier, dateGenerated, status, bookingStatus, poContentId, partialBatchId) 
                 VALUES 
                 ('" . $newLotNumber . "', " . $lotQueryResult['poId'] . ", " . $lotQueryResult['partId'] . ", '" . $lotQueryResult['parentLot'] . "', " . $lotQueryResult['partLevel'] . ", " . $quantity . ", " . $lotQueryResult['identifier'] . ", now(), " . $lotQueryResult['status'] . ", 1, '" . $lotQueryResult['poContentId'] . "', '" . $lotQueryResult['partialBatchId'] . "')";
-        $db->query($sql);
+        $db->query($sql); //uncomment for testing
        echo "<tr><td>3</td><td>Insert New Lot</td><td>{$sql}</td></tr>";
 
        
         $sql = "UPDATE ppic_lotlist SET workingQuantity = " . $newQuantity . " WHERE lotNumber like '" . $lot . "'";
-        $db->query($sql);
+        $db->query($sql); //uncomment for testing
 
         echo "<tr><td>4</td><td>Update Lot Quantity</td><td>{$sql}</td></tr>";
 
@@ -215,7 +215,7 @@ function partialLotNumberTest($lot, $quantity, $startFromProcessOrder, $employee
                         SELECT poId, customerId, poNumber, partNumber, revisionId, processCode , processSection, processRemarks, targetFinish, receiveDate, deliveryDate, recoveryDate, urgentFlag, subconFlag, partLevelFlag, '" . $newLotNumber . "', " . ($processOrder++) . " 
                         FROM ppic_workschedule
                         WHERE id = " . $id . " LIMIT 1";
-                 $db->query($sql);
+                 $db->query($sql);//uncomment for testing
                 
                 echo "<tr><td>7</td><td>Insert Work Schedule for Process Code</td><td>{$sql}</td></tr>";
             }
@@ -236,7 +236,7 @@ function partialLotNumberTest($lot, $quantity, $startFromProcessOrder, $employee
                     (poId, customerId, poNumber, lotNumber, partNumber, revisionId, processCode , processOrder, processSection, processRemarks, targetFinish, receiveDate, deliveryDate, recoveryDate, urgentFlag, subconFlag, partLevelFlag) 
                     VALUES 
                     (" . $workScheduleDetailQueryResult['poId'] . ", " . $workScheduleDetailQueryResult['customerId'] . ", '" . $workScheduleDetailQueryResult['poNumber'] . "', '" . $newLotNumber . "', '" . $workScheduleDetailQueryResult['partNumber'] . "', '" . $workScheduleDetailQueryResult['revisionId'] . "', '" . $workScheduleQueryResult['processCode'] . "', " . ($processOrder++) . ", " . $workScheduleQueryResult['processSection'] . ", '" . $workScheduleQueryResult['processRemarks'] . "', '" . $workScheduleQueryResult['targetFinish'] . "', '" . $workScheduleDetailQueryResult['receiveDate'] . "', '" . $workScheduleDetailQueryResult['deliveryDate'] . "', '" . $workScheduleDetailQueryResult['recoveryDate'] . "', " . $workScheduleDetailQueryResult['urgentFlag'] . ", " . $workScheduleDetailQueryResult['subconFlag'] . ", " . $workScheduleDetailQueryResult['partLevelFlag'] . ")";
-            $db->query($sql);
+            $db->query($sql);//uncomment for testing
 
             echo "<tr><td>9</td><td>Insert into Work Schedule</td><td>{$sql}</td></tr>";
         }
@@ -245,7 +245,7 @@ function partialLotNumberTest($lot, $quantity, $startFromProcessOrder, $employee
                 (lotNumber, employeeId, date, remarks, type, sourceLotNumber, partialQuantity) 
                 VALUES 
                 ('" . $newLotNumber . "', 'SYSTEM', now(), 'Automated Partial', 3, '" . $lot . "', '" . $newQuantity . "')";
-            $db->query($sql);
+            $db->query($sql);//uncomment for testing
 
         echo "<tr><td>10</td><td>Insert into PRS Log</td><td>{$sql}</td></tr>";
 
